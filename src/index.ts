@@ -47,7 +47,7 @@ export function grpcBaseQuery({
         request,
         host,
         onMessage: (message: Message) => {
-          method.requestStream ? messages.push(message) : resolve(message);
+          method.responseStream ? messages.push(message) : resolve(message);
         },
         onEnd: (code: grpc.Code, msg: string | undefined, trailers: grpc.Metadata) => {
           if (code == grpc.Code.OK) {

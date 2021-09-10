@@ -1,6 +1,6 @@
 {
   "name": "rtk-query-grpc-web",
-  "version": "0.0.1-alpha",
+  "version": "0.0.1-beta",
   "description": "RTK (Redux Toolkit) base Query for grpc-web proxied APIs",
   "main": "dist/index.js",
   "repository": {
