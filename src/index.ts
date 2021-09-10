@@ -13,6 +13,15 @@ export type GrpcBaseQueryArgs = {
   host: string
 }
 
+export type GrpcBaseQueryError = {
+  /**
+   * * `grpc.Code`:
+   *   GRPC status code
+   */
+  code: grpc.Code
+  message: string
+}
+
 /**
  * This is a very small wrapper around grpc-web that aims to simplify requests.
  * {@link [grpc-web](https://github.com/improbable-eng/grpc-web)}.
@@ -32,7 +41,9 @@ export type GrpcBaseQueryArgs = {
 export function grpcBaseQuery({
   host
 }: GrpcBaseQueryArgs): BaseQueryFn<
-  GrpcArgs
+  GrpcArgs,
+  unknown,
+  GrpcBaseQueryError
 > {
   if (typeof invoke === 'undefined' || typeof host === 'undefined') {
     console.warn(
@@ -40,7 +51,7 @@ export function grpcBaseQuery({
     )
   }
   return async ({ method, request }) => {
-    let response = await new Promise((resolve, reject) => {
+    const response = await new Promise((resolve, reject) => {
       const messages: any[] = [];
 
       invoke(method, {
@@ -49,17 +60,15 @@ export function grpcBaseQuery({
         onMessage: (message: Message) => {
           method.responseStream ? messages.push(message) : resolve(message);
         },
-        onEnd: (code: grpc.Code, msg: string | undefined, trailers: grpc.Metadata) => {
+        onEnd: (code: grpc.Code, message: string | undefined) => {
           if (code == grpc.Code.OK) {
             resolve(messages);
           } else {
-            reject({ code, msg });
+            reject({ code, message });
           }
         }
       });
-    }).catch((error) => {
-      throw error;
-    });
+    }).catch((error) => error);
 
     return {
       data: response,
