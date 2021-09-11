@@ -4,6 +4,11 @@ import { grpc } from "@improbable-eng/grpc-web";
 import { MethodDefinition } from "@improbable-eng/grpc-web/dist/typings/service";
 const { invoke } = grpc;
 
+type Result = {
+  error?: GrpcBaseQueryError
+  data?: Message | Message[]
+}
+
 export interface GrpcArgs {
   method: MethodDefinition<Message, Message>
   request: Message
@@ -62,16 +67,21 @@ export function grpcBaseQuery({
         },
         onEnd: (code: grpc.Code, message: string | undefined) => {
           if (code == grpc.Code.OK) {
-            resolve(messages);
+            resolve({ data: messages });
           } else {
             reject({ code, message });
           }
         }
       });
-    }).catch((error) => error);
+    }).catch((error) => {
+      return {
+        error
+      }
+    });
 
-    return {
-      data: response,
-    };
+    const { error, data } = response as Result;
+    return (error) ?
+      { error: error }
+      : { data: data };
   }
 }
