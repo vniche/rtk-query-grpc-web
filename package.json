@@ -1,6 +1,6 @@
 {
   "name": "rtk-query-grpc-web",
-  "version": "0.0.1-foxtrot",
+  "version": "0.0.1-golf",
   "description": "RTK (Redux Toolkit) base Query for grpc-web proxied APIs",
   "main": "dist/index.js",
   "repository": {
@@ -18,7 +18,8 @@
     "grpc-web"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "rm -rf dist && tsc",
+    "deploy": "npm publish"
   },
   "author": "vniche <viniciusnichecorrea@gmail.com>",
   "license": "MIT",

@@ -57,17 +57,17 @@ export function grpcBaseQuery({
   }
   return async ({ method, request }) => {
     const response = await new Promise((resolve, reject) => {
-      const messages: any[] = [];
+      const result: Result = {};
 
       invoke(method, {
         request,
         host,
         onMessage: (message: Message) => {
-          method.responseStream ? messages.push(message) : resolve(message);
+          method.responseStream ? (result.data as Message[]).push(message) : result.data = message;
         },
         onEnd: (code: grpc.Code, message: string | undefined) => {
-          if (code == grpc.Code.OK) {
-            resolve({ data: messages });
+          if (code === grpc.Code.OK) {
+            resolve(result);
           } else {
             reject({ code, message });
           }
@@ -76,9 +76,9 @@ export function grpcBaseQuery({
     }).catch((error) => {
       return {
         error
-      }
+      } as Result
     });
-
+    
     const { error, data } = response as Result;
     return (error) ?
       { error: error }
