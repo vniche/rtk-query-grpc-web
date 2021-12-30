@@ -16,6 +16,7 @@ export interface GrpcArgs {
 
 export type GrpcBaseQueryArgs = {
   host: string
+  metadata?: grpc.Metadata
 }
 
 export type GrpcBaseQueryError = {
@@ -44,7 +45,8 @@ export type GrpcBaseQueryError = {
  *
  */
 export function grpcBaseQuery({
-  host
+  host,
+  metadata
 }: GrpcBaseQueryArgs): BaseQueryFn<
   GrpcArgs,
   unknown,
@@ -62,6 +64,7 @@ export function grpcBaseQuery({
       invoke(method, {
         request,
         host,
+        metadata,
         onMessage: (message: Message) => {
           method.responseStream ? (result.data as Message[]).push(message) : result.data = message;
         },
