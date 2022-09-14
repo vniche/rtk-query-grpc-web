@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://gitub.com/vniche/rtk-query-grpc-web.git"
+    "url": "https://github.com/vniche/rtk-query-grpc-web.git"
   },
   "bugs": {
     "url": "https://github.com/vniche/rtk-query-grpc-web/issues"
